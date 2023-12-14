@@ -15,8 +15,7 @@ namespace Gee.External.Capstone {
         /// <returns>
         ///     A pointer to the allocated memory.
         /// </returns>
-        internal static IntPtr AllocHGlobal<T>()
-        {
+        internal static IntPtr AllocHGlobal<T>() {
             var nType = MarshalExtension.SizeOf<T>();
             var pType = Marshal.AllocHGlobal(nType);
 
@@ -35,8 +34,7 @@ namespace Gee.External.Capstone {
         /// <returns>
         ///     A pointer to the allocated memory.
         /// </returns>
-        internal static IntPtr AllocHGlobal<T>(int size)
-        {
+        internal static IntPtr AllocHGlobal<T>(int size) {
             var nType = MarshalExtension.SizeOf<T>() * size;
             var pType = Marshal.AllocHGlobal(nType);
 
@@ -55,8 +53,7 @@ namespace Gee.External.Capstone {
         /// <returns>
         ///     The destination structure.
         /// </returns>
-        internal static T FreePtrToStructure<T>(IntPtr p)
-        {
+        internal static T FreePtrToStructure<T>(IntPtr p) {
             var @struct = MarshalExtension.PtrToStructure<T>(p);
             Marshal.FreeHGlobal(p);
 
@@ -77,8 +74,7 @@ namespace Gee.External.Capstone {
         ///     The offset, in bytes, for the fieldName parameter within the specified class
         ///     that is declared by platform invoke.
         /// </returns>
-        public static IntPtr OffsetOf<T>(string fieldName)
-        {
+        public static IntPtr OffsetOf<T>(string fieldName) {
 #if NETSTANDARD
             return Marshal.OffsetOf<T>(fieldName);
 #else
@@ -122,8 +118,7 @@ namespace Gee.External.Capstone {
         /// <returns>
         ///     The destination collection.
         /// </returns>
-        internal static T[] PtrToStructure<T>(IntPtr p, int size)
-        {
+        internal static T[] PtrToStructure<T>(IntPtr p, int size) {
             var array = new T[size];
             var index = p;
             for (var i = 0; i < size; i++) {
