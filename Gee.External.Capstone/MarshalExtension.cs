@@ -15,7 +15,8 @@ namespace Gee.External.Capstone {
         /// <returns>
         ///     A pointer to the allocated memory.
         /// </returns>
-        internal static IntPtr AllocHGlobal<T>() {
+        internal static IntPtr AllocHGlobal<T>()
+        {
             var nType = MarshalExtension.SizeOf<T>();
             var pType = Marshal.AllocHGlobal(nType);
 
@@ -34,7 +35,8 @@ namespace Gee.External.Capstone {
         /// <returns>
         ///     A pointer to the allocated memory.
         /// </returns>
-        internal static IntPtr AllocHGlobal<T>(int size) {
+        internal static IntPtr AllocHGlobal<T>(int size)
+        {
             var nType = MarshalExtension.SizeOf<T>() * size;
             var pType = Marshal.AllocHGlobal(nType);
 
@@ -53,11 +55,35 @@ namespace Gee.External.Capstone {
         /// <returns>
         ///     The destination structure.
         /// </returns>
-        internal static T FreePtrToStructure<T>(IntPtr p) {
-            var @struct = Marshal.PtrToStructure(p, typeof(T));
+        internal static T FreePtrToStructure<T>(IntPtr p)
+        {
+            var @struct = MarshalExtension.PtrToStructure<T>(p);
             Marshal.FreeHGlobal(p);
 
-            return (T) @struct;
+            return @struct;
+        }
+
+        /// <summary>
+        ///     Returns the field offset of the unmanaged form of the managed class.
+        /// </summary>
+        /// <typeparam name="T">
+        ///     A value type or formatted reference type that specifies the managed class. You
+        ///     must apply the System.Runtime.InteropServices.StructLayoutAttribute to the class.
+        /// </typeparam>
+        /// <param name="fieldName">
+        ///     The field within the t parameter.
+        /// </param>
+        /// <returns>
+        ///     The offset, in bytes, for the fieldName parameter within the specified class
+        ///     that is declared by platform invoke.
+        /// </returns>
+        public static IntPtr OffsetOf<T>(string fieldName)
+        {
+#if NETSTANDARD
+            return Marshal.OffsetOf<T>(fieldName);
+#else
+            return Marshal.OffsetOf(typeof(T), fieldName);
+#endif
         }
 
         /// <summary>
@@ -73,8 +99,12 @@ namespace Gee.External.Capstone {
         ///     The destination structure.
         /// </returns>
         internal static T PtrToStructure<T>(IntPtr p) {
+#if NETSTANDARD
+            return Marshal.PtrToStructure<T>(p);
+#else
             var @struct = Marshal.PtrToStructure(p, typeof(T));
             return (T) @struct;
+#endif
         }
 
         /// <summary>
@@ -92,14 +122,15 @@ namespace Gee.External.Capstone {
         /// <returns>
         ///     The destination collection.
         /// </returns>
-        internal static T[] PtrToStructure<T>(IntPtr p, int size) {
+        internal static T[] PtrToStructure<T>(IntPtr p, int size)
+        {
             var array = new T[size];
             var index = p;
             for (var i = 0; i < size; i++) {
                 var element = MarshalExtension.PtrToStructure<T>(index);
                 array[i] = element;
 
-                index += Marshal.SizeOf(typeof(T));
+                index += MarshalExtension.SizeOf<T>();
             }
 
             return array;
@@ -115,8 +146,12 @@ namespace Gee.External.Capstone {
         ///     The type's size, in bytes.
         /// </returns>
         internal static int SizeOf<T>() {
+#if NETSTANDARD
+            return Marshal.SizeOf<T>();
+#else
             var size = Marshal.SizeOf(typeof(T));
             return size;
+#endif
         }
     }
 }

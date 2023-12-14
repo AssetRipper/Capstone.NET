@@ -253,7 +253,7 @@ namespace Gee.External.Capstone {
                 // First, we calculate the memory address of the <c>NativeInstruction.Details</c> field, which is
                 // always relative to the memory address of its defining <c>NativeInstruction</c> structure. This is
                 // NOT the actual memory address of the instruction's details.
-                var instructionDetailOffset = Marshal.OffsetOf(typeof(NativeInstruction), nameof(NativeInstruction.Details));
+                var instructionDetailOffset = MarshalExtension.OffsetOf<NativeInstruction>(nameof(NativeInstruction.Details));
                 var pInstructionDetail = (IntPtr) ((long) pInstruction + (long) instructionDetailOffset);
 
                 // ...
@@ -295,7 +295,7 @@ namespace Gee.External.Capstone {
                 // First, we calculate the memory address of the <c>NativeInstruction.Details</c> field, which is
                 // always relative to the memory address of its defining <c>NativeInstruction</c> structure. This is
                 // NOT the actual memory address of the instruction's details.
-                var instructionDetailOffset = Marshal.OffsetOf(typeof(NativeInstruction), nameof(NativeInstruction.Details));
+                var instructionDetailOffset = MarshalExtension.OffsetOf<NativeInstruction>(nameof(NativeInstruction.Details));
                 var pInstructionDetail = (IntPtr) ((long) pInstruction + (long) instructionDetailOffset);
 
                 // ...
@@ -311,7 +311,7 @@ namespace Gee.External.Capstone {
                     // Fourth, we calculate the memory address of the instruction's architecture specific details,
                     // which is always relative to the memory address of the instruction's details.
                     var pArchInstructionDetail = ppInstructionDetail + NativeCapstone.MagicInstructionArchitectureDetailsFieldOffset;
-                    instructionDetail = (TInstructionDetail) Marshal.PtrToStructure(pArchInstructionDetail, typeof(TInstructionDetail));
+                    instructionDetail = MarshalExtension.PtrToStructure<TInstructionDetail>(pArchInstructionDetail);
                 }
 
                 return instructionDetail;
